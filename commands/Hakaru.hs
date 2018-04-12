@@ -85,6 +85,7 @@ illustrate (SMeasure s) weights g (VMeasure m) = do
 
 illustrate _ _ _ x = renderLn x
 
+
 withWeight :: Value 'HProb -> IO () -> IO ()
 withWeight w m = render w >> putStr "\t" >> m
 
