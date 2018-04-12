@@ -25,7 +25,7 @@ module Language.Hakaru.Types.DataKind
     -- * The core definition of Hakaru types
       Hakaru(..)
     , HakaruFun(..)
-    , HakaruCon(..) 
+    , HakaruCon(..)
     -- *
     , Symbol
     , Code
@@ -52,14 +52,15 @@ data Hakaru
     | HInt
 
     -- | Non-negative real numbers. Unlike what you might expect,
-    -- this is /not/ restructed to the @[0,1]@ interval!
+    -- this is /not/ restricted to the @[0,1]@ interval!
     | HProb
 
     -- | The affinely extended real number line. That is, the real
     -- numbers extended with positive and negative infinities.
     | HReal
 
-    -- TODO: so much of our code has to distinguish between monadic and pure stuff. Maybe we should just break this out into a separate larger universe?
+    -- TODO: so much of our code has to distinguish between monadic and pure stuff.
+    --       Maybe we should just break this out into a separate larger universe?
     -- | The measure monad
     | HMeasure !Hakaru
 
