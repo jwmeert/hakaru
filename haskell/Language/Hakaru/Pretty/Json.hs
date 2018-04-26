@@ -47,6 +47,7 @@ import Language.Hakaru.Syntax.ABT
 import Language.Hakaru.Syntax.IClasses
 import Language.Hakaru.Expect
 
+
 jop1 :: String -> ShowS -> ShowS
 jop1 fn x = showString fn . curlies x
 {-# INLINE jop1 #-}
@@ -72,10 +73,10 @@ curlies a = showChar '{' . a . showChar '}'
 {-# INLINE curlies #-}
 
 jsonType :: Sing (a :: Hakaru) -> ShowS
-jsonType SNat = showString "\"Natural\""
-jsonType SInt = showString "\"Integer\""
-jsonType SProb = showString "\"Probibility\""
-jsonType SReal = showString "\"Real\""
+jsonType SNat = showString "\"Nat\" : \"Nat\""
+jsonType SInt = showString "\"Int\" : \"Int\""
+jsonType SProb = showString "\"Prob\" : \"Prob\""
+jsonType SReal = showString "\"Real\" : \"Real\""
 jsonType (SFun a b) = jop2 "\"Function\" : " (jsonType a) (jsonType b)
 jsonType (SArray a) = jop1 "\"Array\" : " (jsonType a)
 jsonType (SMeasure a) = jop1 "\"Measure\" : " (jsonType a)
@@ -96,7 +97,7 @@ jsonType (SData (STyCon c) (SPlus SDone (SPlus SDone SVoid)))
 jsonType x = error $ "TODO: jsonType{" ++ show x ++ "}"
 
 jsonTypeDStruct :: Sing (a :: [HakaruFun]) -> ShowS
-jsonTypeDStruct SDone = showString "NULL"
+jsonTypeDStruct SDone = showString "\"NULL\" : \"NULL\""
 jsonTypeDStruct (SEt x xs) =
   jsonTypeDFun x
   . showString ","

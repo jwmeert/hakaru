@@ -23,4 +23,4 @@ runPretty prog =
     Right (TypedAST typ ast) -> do
       -- U.putStrLnS $ Maple.pretty (expandTransformations ast)
       -- U.putStrLn  $ ","
-      U.putStrLnS $ JSON.jsonType typ ""
+      U.putStrLnS $ ((showString "{") . JSON.jsonType typ . (showString "}")) ""
