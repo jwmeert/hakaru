@@ -3,6 +3,7 @@
 module Main where
 
 import qualified Language.Hakaru.Pretty.Maple as Maple
+import qualified Language.Hakaru.Pretty.Json as JSON
 import           Language.Hakaru.Syntax.AST.Transforms
 import           Language.Hakaru.Syntax.TypeCheck
 import           Language.Hakaru.Command
@@ -20,7 +21,6 @@ runPretty prog =
     case parseAndInfer prog of
     Left  err              -> U.hPut stderr err
     Right (TypedAST typ ast) -> do
-      U.putStrLnS $ Maple.pretty (expandTransformations ast)
-      U.putStrLn  $ ","
-      U.putStrLnS $ Maple.mapleType typ ""
-
+      -- U.putStrLnS $ Maple.pretty (expandTransformations ast)
+      -- U.putStrLn  $ ","
+      U.putStrLnS $ JSON.jsonType typ ""

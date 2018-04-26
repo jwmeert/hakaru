@@ -30,7 +30,7 @@ Flag traceDisintegrate
 Library
     Hs-Source-Dirs:    haskell
     Default-Language:  Haskell2010
-    GHC-Options:       -Wall -fwarn-tabs -j6 
+    GHC-Options:       -Wall -fwarn-tabs -j6
 
     if flag(traceDisintegrate)
         Cpp-Options:   -D__TRACE_DISINTEGRATE__
@@ -75,6 +75,7 @@ Library
                        Language.Hakaru.Pretty.SExpression,
                        Language.Hakaru.Pretty.Concrete,
                        Language.Hakaru.Pretty.Maple,
+                       Language.Hakaru.Pretty.Json,
                        Language.Hakaru.Runtime.Prelude,
                        Language.Hakaru.Runtime.LogFloatPrelude,
                        Language.Hakaru.Runtime.CmdLine,
