@@ -93,11 +93,11 @@ jsonType (SData (STyCon c) (SPlus SDone SVoid))
 -- Special case Bool
 jsonType (SData (STyCon c) (SPlus SDone (SPlus SDone SVoid)))
   | isJust (jmEq1 c sSymbol_Bool)
-  = showString "\"Bool\""
+  = showString "\"Bool\" : \"Bool\""
 jsonType x = error $ "TODO: jsonType{" ++ show x ++ "}"
 
 jsonTypeDStruct :: Sing (a :: [HakaruFun]) -> ShowS
-jsonTypeDStruct SDone = showString "\"NULL\" : \"NULL\""
+jsonTypeDStruct SDone = showString "\"NULL\""
 jsonTypeDStruct (SEt x xs) =
   jsonTypeDFun x
   . showString ","
