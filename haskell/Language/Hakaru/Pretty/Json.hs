@@ -47,64 +47,51 @@ import Language.Hakaru.Syntax.ABT
 import Language.Hakaru.Syntax.IClasses
 import Language.Hakaru.Expect
 
-
-jop1 :: String -> ShowS -> ShowS
-jop1 fn x = showString fn . curlies x
-{-# INLINE jop1 #-}
-
-jop2 :: String -> ShowS -> ShowS -> ShowS
-jop2 fn x y = showString fn . curlies (x . showString ", " . y)
-{-# INLINE jop2 #-}
-
-jop3 :: String -> ShowS -> ShowS -> ShowS -> ShowS
-jop3 fn x y z
-  = showString fn
-    . curlies
-      ( x
-      . showString ", "
-      . y
-      . showString ", "
-      . z
-      )
-{-# INLINE jop3 #-}
-
-curlies :: ShowS -> ShowS
-curlies a = showChar '{' . a . showChar '}'
-{-# INLINE curlies #-}
-
 jsonType :: Sing (a :: Hakaru) -> ShowS
-jsonType SNat = showString "\"Nat\" : \"Nat\""
-jsonType SInt = showString "\"Int\" : \"Int\""
-jsonType SProb = showString "\"Prob\" : \"Prob\""
-jsonType SReal = showString "\"Real\" : \"Real\""
-jsonType (SFun a b) = jop2 "\"Function\" : " (jsonType a) (jsonType b)
-jsonType (SArray a) = jop1 "\"Array\" : " (jsonType a)
-jsonType (SMeasure a) = jop1 "\"Measure\" : " (jsonType a)
+jsonType SNat = showString "\"Nat\""
+jsonType SInt = showString "\"Int\""
+jsonType SProb = showString "\"Prob\""
+jsonType SReal = showString "\"Real\""
+jsonType (SFun a b) = showString "{\"Function\" : " .
+                      (jsonType a) .
+                      (jsonType b) .
+                      showString "}"
+jsonType (SArray a) = showString "{\"Array\" : " .
+                      (jsonType a) .
+                      showString "}"
+jsonType (SMeasure a) = showString "{\"Measure\" : " .
+                        (jsonType a) .
+                        showString "}"
 -- Special case pair
 jsonType (SData (STyCon c `STyApp` _ `STyApp` _) (SPlus x SVoid))
   | isJust (jmEq1 c sSymbol_Pair)
-  = showString "\"Pair\" : ["
+  = showString "{\"Pair\" : ["
   . jsonTypeDStruct x
-  . showString "]"
+  . showString "]}"
+
 -- Special case unit
 jsonType (SData (STyCon c) (SPlus SDone SVoid))
   | isJust (jmEq1 c sSymbol_Unit)
-  = showString "\"Unit\" : []"
+  = showString "{\"Unit\" : []}"
 -- Special case Bool
 jsonType (SData (STyCon c) (SPlus SDone (SPlus SDone SVoid)))
   | isJust (jmEq1 c sSymbol_Bool)
-  = showString "\"Bool\" : \"Bool\""
+  = showString "\"Bool\""
 jsonType x = error $ "TODO: jsonType{" ++ show x ++ "}"
 
-jsonTypeDStruct :: Sing (a :: [HakaruFun]) -> ShowS
-jsonTypeDStruct SDone = showString "\"NULL\""
-jsonTypeDStruct (SEt x xs) =
+dStructHelp :: Sing (x :: HakaruFun) -> Sing (xs :: [HakaruFun]) -> ShowS
+dStructHelp x SDone = jsonTypeDFun x
+dStructHelp x (SEt x' xs) =
   jsonTypeDFun x
   . showString ","
-  . jsonTypeDStruct xs
+  . dStructHelp x' xs
+
+jsonTypeDStruct :: Sing (a :: [HakaruFun]) -> ShowS
+jsonTypeDStruct SDone = showString ""
+jsonTypeDStruct (SEt x xs) = dStructHelp x xs
 
 jsonTypeDFun :: Sing (a :: HakaruFun) -> ShowS
-jsonTypeDFun (SKonst a) = jop1 "" (jsonType a)
+jsonTypeDFun (SKonst a) = (jsonType a)
 jsonTypeDFun SIdent     = showString "Ident"
 
 --
