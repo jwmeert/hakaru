@@ -37,6 +37,7 @@ import qualified System.Random.MWC   as MWC
 
 data Options = Options
   { noWeights  :: Bool
+  , json       :: Bool
   , seed       :: Maybe Word32
   , transition :: Maybe String
   , prog       :: String }
@@ -47,6 +48,10 @@ options = Options
       ( O.short 'w' <>
         O.long "no-weights" <>
         O.help "Don't print the weights" )
+  <*> O.switch
+      ( O.short 'j' <>
+        O.long "json-values" <>
+        O.help "Print all values in JSON format" )
   <*> O.optional (O.option O.auto
       ( O.long "seed" <>
         O.help "Set random seed" <>
@@ -95,7 +100,7 @@ render = putStr . renderStyle style {mode = LeftMode} . prettyValue
 renderLn :: Value a -> IO ()
 renderLn = putStrLn . renderStyle style {mode = LeftMode} . prettyValue
 
--- TODO: A better needs to be found for passing weights around
+-- TODO: A better way needs to be found for passing weights around
 runHakaru :: MWC.GenIO -> Bool -> Source -> IO ()
 runHakaru g weights progname = do
     prog' <- parseAndInfer' progname

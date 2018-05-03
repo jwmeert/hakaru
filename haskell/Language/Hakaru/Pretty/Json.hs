@@ -68,7 +68,6 @@ jsonType (SData (STyCon c `STyApp` _ `STyApp` _) (SPlus x SVoid))
   = showString "{\"Pair\" : ["
   . jsonTypeDStruct x
   . showString "]}"
-
 -- Special case unit
 jsonType (SData (STyCon c) (SPlus SDone SVoid))
   | isJust (jmEq1 c sSymbol_Unit)
